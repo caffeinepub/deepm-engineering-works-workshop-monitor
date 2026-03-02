@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/assets/fonts/Outfit-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    /* Dark industrial theme as default */
+    --background: 0.16 0.008 250;
+    --foreground: 0.93 0.005 250;
+    --card: 0.20 0.010 250;
+    --card-foreground: 0.93 0.005 250;
+    --popover: 0.23 0.012 250;
+    --popover-foreground: 0.93 0.005 250;
+    --primary: 0.65 0.2 30;
+    --primary-foreground: 0.98 0 0;
+    --secondary: 0.26 0.010 250;
+    --secondary-foreground: 0.85 0.005 250;
+    --muted: 0.26 0.010 250;
+    --muted-foreground: 0.58 0.012 250;
+    --accent: 0.30 0.012 250;
+    --accent-foreground: 0.93 0.005 250;
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 0.98 0 0;
+    --border: 0.30 0.012 250;
+    --input: 0.28 0.010 250;
+    --ring: 0.65 0.2 30;
+    --chart-1: 0.65 0.2 30;
+    --chart-2: 0.6 0.2 250;
+    --chart-3: 0.75 0.18 85;
+    --chart-4: 0.65 0.18 145;
+    --chart-5: 0.6 0.15 55;
+    --sidebar: 0.18 0.009 250;
+    --sidebar-foreground: 0.93 0.005 250;
+    --sidebar-primary: 0.65 0.2 30;
+    --sidebar-primary-foreground: 0.98 0 0;
+    --sidebar-accent: 0.26 0.010 250;
+    --sidebar-accent-foreground: 0.93 0.005 250;
+    --sidebar-border: 0.30 0.012 250;
+    --sidebar-ring: 0.65 0.2 30;
+    /* Section accent colors */
+    --container-accent: 0.65 0.2 30;
+    --cabin-accent: 0.6 0.2 250;
+    --painting-accent: 0.75 0.18 85;
+    --parking-accent: 0.65 0.18 145;
+    --underpart-accent: 0.6 0.15 55;
+  }
+
+  .light {
+    --background: 0.97 0.003 250;
+    --foreground: 0.16 0.008 250;
+    --card: 1 0 0;
+    --card-foreground: 0.16 0.008 250;
+    --popover: 1 0 0;
+    --popover-foreground: 0.16 0.008 250;
+    --primary: 0.58 0.2 30;
+    --primary-foreground: 0.98 0 0;
+    --secondary: 0.94 0.005 250;
+    --secondary-foreground: 0.25 0.008 250;
+    --muted: 0.94 0.005 250;
+    --muted-foreground: 0.52 0.012 250;
+    --accent: 0.92 0.005 250;
+    --accent-foreground: 0.25 0.008 250;
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+    --border: 0.88 0.005 250;
+    --input: 0.88 0.005 250;
+    --ring: 0.58 0.2 30;
+    --chart-1: 0.58 0.2 30;
+    --chart-2: 0.5 0.2 250;
+    --chart-3: 0.65 0.18 85;
+    --chart-4: 0.55 0.18 145;
+    --chart-5: 0.5 0.15 55;
+    --sidebar: 0.95 0.004 250;
+    --sidebar-foreground: 0.16 0.008 250;
+    --sidebar-primary: 0.58 0.2 30;
+    --sidebar-primary-foreground: 0.98 0 0;
+    --sidebar-accent: 0.92 0.005 250;
+    --sidebar-accent-foreground: 0.25 0.008 250;
+    --sidebar-border: 0.88 0.005 250;
+    --sidebar-ring: 0.58 0.2 30;
+    --container-accent: 0.58 0.2 30;
+    --cabin-accent: 0.5 0.2 250;
+    --painting-accent: 0.65 0.18 85;
+    --parking-accent: 0.55 0.18 145;
+    --underpart-accent: 0.5 0.15 55;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
