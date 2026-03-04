@@ -56,6 +56,9 @@ export default function CabinForm({
   onSubmit,
   initial,
 }: CabinFormProps) {
+  const [customerName, setCustomerName] = useState(
+    initial?.customer_name || "",
+  );
   const [teamNo, setTeamNo] = useState(initial?.team_no || "");
   const [cabinType, setCabinType] = useState(initial?.cabin_type || "");
   const [stage, setStage] = useState(initial?.stage || "Not Started");
@@ -69,6 +72,7 @@ export default function CabinForm({
 
   useEffect(() => {
     if (initial) {
+      setCustomerName(initial.customer_name || "");
       setTeamNo(initial.team_no || "");
       setCabinType(initial.cabin_type || "");
       setStage(initial.stage || "Not Started");
@@ -76,6 +80,7 @@ export default function CabinForm({
       setNotes(initial.notes || "");
       setKeptPhotoUrls(initial.photos || []);
     } else {
+      setCustomerName("");
       setTeamNo("");
       setCabinType("");
       setStage("Not Started");
@@ -88,6 +93,10 @@ export default function CabinForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!customerName.trim()) {
+      toast.error("Customer name is required");
+      return;
+    }
     if (!teamNo) {
       toast.error("Team number is required");
       return;
@@ -99,10 +108,10 @@ export default function CabinForm({
     setSubmitting(true);
     try {
       await onSubmit({
+        customer_name: customerName.trim(),
         team_no: teamNo,
         cabin_type: cabinType,
         stage,
-        start_date: "",
         expected_date: expectedDate,
         notes,
         photos: keptPhotoUrls,
@@ -125,9 +134,23 @@ export default function CabinForm({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div className="space-y-1.5">
+            <Label htmlFor="cabin-customer-name">Customer Name *</Label>
+            <Input
+              id="cabin-customer-name"
+              data-ocid="cabin.input"
+              type="text"
+              className="h-11 text-base"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder="e.g. Kumar Transports"
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
             <Label>Team No *</Label>
             <Select value={teamNo} onValueChange={setTeamNo}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11" data-ocid="cabin.select">
                 <SelectValue placeholder="Select team" />
               </SelectTrigger>
               <SelectContent>
@@ -210,10 +233,16 @@ export default function CabinForm({
               variant="outline"
               className="flex-1 h-11"
               onClick={onClose}
+              data-ocid="cabin.cancel_button"
             >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 h-11" disabled={submitting}>
+            <Button
+              type="submit"
+              className="flex-1 h-11"
+              disabled={submitting}
+              data-ocid="cabin.submit_button"
+            >
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {initial ? "Update" : "Create"}
             </Button>

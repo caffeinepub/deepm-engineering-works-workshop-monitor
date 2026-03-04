@@ -17,10 +17,10 @@ function mapCabinRaw(raw: {
 }): Omit<Cabin, "photos"> & { rawPhotos: unknown[] } {
   return {
     id: raw.id.toString(),
+    customer_name: raw.startDate, // repurposed field: backend startDate stores customer name
     team_no: raw.teamNo,
     cabin_type: raw.cabinType,
     stage: raw.stage,
-    start_date: raw.startDate,
     expected_date: raw.expectedDate,
     notes: raw.notes,
     rawPhotos: raw.photos || [],
@@ -35,33 +35,37 @@ export function useCabins() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refetch = useCallback(async () => {
-    if (!actor) return;
-    try {
-      setLoading(true);
-      const result = await actor.getCabins();
-      const rawItems = result.map(mapCabinRaw).reverse();
+  const refetch = useCallback(
+    async (showLoading = false) => {
+      if (!actor) return;
+      try {
+        if (showLoading) setLoading(true);
+        const result = await actor.getCabins();
+        const rawItems = result.map(mapCabinRaw).reverse();
 
-      const items: Cabin[] = await Promise.all(
-        rawItems.map(async (item) => {
-          const photos = await resolvePhotos(item.rawPhotos);
-          return { ...item, photos };
-        }),
-      );
+        const items: Cabin[] = await Promise.all(
+          rawItems.map(async (item) => {
+            const photos = await resolvePhotos(item.rawPhotos);
+            return { ...item, photos };
+          }),
+        );
 
-      setData(items);
-      setError(null);
-    } catch (e) {
-      setError(e as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [actor]);
+        setData(items);
+        setError(null);
+      } catch (e) {
+        setError(e as Error);
+      } finally {
+        if (showLoading) setLoading(false);
+      }
+    },
+    [actor],
+  );
 
   useEffect(() => {
     if (!actor || isFetching) return;
-    refetch();
-    const interval = setInterval(refetch, 20000);
+    setLoading(true);
+    refetch(true);
+    const interval = setInterval(() => refetch(false), 30000);
     return () => clearInterval(interval);
   }, [actor, isFetching, refetch]);
 
@@ -76,7 +80,7 @@ export function useCabins() {
       teamNo: item.team_no,
       cabinType: item.cabin_type,
       stage: item.stage,
-      startDate: item.start_date,
+      startDate: item.customer_name, // store customer_name in backend's startDate field
       expectedDate: item.expected_date,
       notes: item.notes,
       photos: photoBytes,
@@ -100,7 +104,7 @@ export function useCabins() {
       teamNo: merged.team_no,
       cabinType: merged.cabin_type,
       stage: merged.stage,
-      startDate: merged.start_date,
+      startDate: merged.customer_name, // store customer_name in backend's startDate field
       expectedDate: merged.expected_date,
       notes: merged.notes,
       photos: newBytes,

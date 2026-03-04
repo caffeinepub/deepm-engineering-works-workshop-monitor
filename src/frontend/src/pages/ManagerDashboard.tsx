@@ -1,12 +1,14 @@
 import Navbar from "@/components/layout/Navbar";
 import CabinsSection from "@/components/sections/CabinsSection";
 import ContainersSection from "@/components/sections/ContainersSection";
+import DeliverySection from "@/components/sections/DeliverySection";
 import PaintingSection from "@/components/sections/PaintingSection";
 import ParkingSection from "@/components/sections/ParkingSection";
 import UnderpartsSection from "@/components/sections/UnderpartsSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCabins } from "@/hooks/useCabins";
 import { useContainers } from "@/hooks/useContainers";
+import { useDelivery } from "@/hooks/useDelivery";
 import { usePainting } from "@/hooks/usePainting";
 import { useParking } from "@/hooks/useParking";
 import { useUnderparts } from "@/hooks/useUnderparts";
@@ -14,6 +16,7 @@ import { getStoredSession } from "@/lib/auth";
 import type {
   Cabin,
   Container,
+  Delivery,
   Painting,
   Parking,
   Underpart,
@@ -31,6 +34,7 @@ export default function ManagerDashboard() {
   const painting = usePainting();
   const parking = useParking();
   const underparts = useUnderparts();
+  const delivery = useDelivery();
 
   useEffect(() => {
     const session = getStoredSession();
@@ -75,6 +79,7 @@ export default function ManagerDashboard() {
               <TabsTrigger
                 value="containers"
                 className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.65_0.2_30_/_0.15)] data-[state=active]:text-[oklch(0.65_0.2_30)]"
+                data-ocid="containers.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">
                   Containers
@@ -83,28 +88,39 @@ export default function ManagerDashboard() {
               <TabsTrigger
                 value="cabins"
                 className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.2_250_/_0.15)] data-[state=active]:text-[oklch(0.6_0.2_250)]"
+                data-ocid="cabins.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">Cabins</span>
               </TabsTrigger>
               <TabsTrigger
                 value="painting"
                 className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.75_0.18_85_/_0.15)] data-[state=active]:text-[oklch(0.75_0.18_85)]"
+                data-ocid="painting.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">Painting</span>
               </TabsTrigger>
               <TabsTrigger
                 value="parking"
                 className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.65_0.18_145_/_0.15)] data-[state=active]:text-[oklch(0.65_0.18_145)]"
+                data-ocid="parking.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">Parking</span>
               </TabsTrigger>
               <TabsTrigger
                 value="underparts"
                 className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.15_55_/_0.15)] data-[state=active]:text-[oklch(0.6_0.15_55)]"
+                data-ocid="underparts.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">
                   Underparts
                 </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="delivery"
+                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.2_300_/_0.15)] data-[state=active]:text-[oklch(0.6_0.2_300)]"
+                data-ocid="delivery.tab"
+              >
+                <span className="text-xs sm:text-sm font-medium">Delivery</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -237,6 +253,32 @@ export default function ManagerDashboard() {
                 )
               }
               onDelete={underparts.remove}
+            />
+          </TabsContent>
+
+          <TabsContent value="delivery">
+            <DeliverySection
+              data={delivery.data}
+              loading={delivery.loading}
+              error={delivery.error}
+              onInsert={(data) =>
+                delivery.insert(
+                  data as Omit<Delivery, "id" | "created_at" | "updated_at"> & {
+                    photoFiles?: File[];
+                    keptPhotoUrls?: string[];
+                  },
+                )
+              }
+              onUpdate={(id, data) =>
+                delivery.update(
+                  id,
+                  data as Partial<Delivery> & {
+                    photoFiles?: File[];
+                    keptPhotoUrls?: string[];
+                  },
+                )
+              }
+              onDelete={delivery.remove}
             />
           </TabsContent>
         </Tabs>

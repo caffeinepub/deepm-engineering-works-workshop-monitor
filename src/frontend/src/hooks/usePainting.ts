@@ -37,33 +37,37 @@ export function usePainting() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refetch = useCallback(async () => {
-    if (!actor) return;
-    try {
-      setLoading(true);
-      const result = await actor.getPaintings();
-      const rawItems = result.map(mapPaintingRaw).reverse();
+  const refetch = useCallback(
+    async (showLoading = false) => {
+      if (!actor) return;
+      try {
+        if (showLoading) setLoading(true);
+        const result = await actor.getPaintings();
+        const rawItems = result.map(mapPaintingRaw).reverse();
 
-      const items: Painting[] = await Promise.all(
-        rawItems.map(async (item) => {
-          const photos = await resolvePhotos(item.rawPhotos);
-          return { ...item, photos };
-        }),
-      );
+        const items: Painting[] = await Promise.all(
+          rawItems.map(async (item) => {
+            const photos = await resolvePhotos(item.rawPhotos);
+            return { ...item, photos };
+          }),
+        );
 
-      setData(items);
-      setError(null);
-    } catch (e) {
-      setError(e as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [actor]);
+        setData(items);
+        setError(null);
+      } catch (e) {
+        setError(e as Error);
+      } finally {
+        if (showLoading) setLoading(false);
+      }
+    },
+    [actor],
+  );
 
   useEffect(() => {
     if (!actor || isFetching) return;
-    refetch();
-    const interval = setInterval(refetch, 20000);
+    setLoading(true);
+    refetch(true);
+    const interval = setInterval(() => refetch(false), 30000);
     return () => clearInterval(interval);
   }, [actor, isFetching, refetch]);
 

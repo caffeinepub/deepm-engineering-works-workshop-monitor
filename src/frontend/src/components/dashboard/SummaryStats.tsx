@@ -7,6 +7,7 @@ import {
 import type {
   Cabin,
   Container,
+  Delivery,
   Painting,
   Parking,
   Underpart,
@@ -18,6 +19,7 @@ import {
   Layers,
   type LucideIcon,
   Palette,
+  Truck,
   Wrench,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -28,6 +30,7 @@ interface SummaryStatsProps {
   painting: Painting[];
   parking: Parking[];
   underparts: Underpart[];
+  deliveries: Delivery[];
 }
 
 function StatCard({
@@ -84,7 +87,10 @@ export default function SummaryStats({
   painting,
   parking,
   underparts,
+  deliveries,
 }: SummaryStatsProps) {
+  const today = new Date().toISOString().split("T")[0];
+
   const delayedContainers = containers.filter((c) =>
     isDelayed(c.expected_date, getContainerProgress(c.stage)),
   ).length;
@@ -97,6 +103,9 @@ export default function SummaryStats({
   const totalDelayed = delayedContainers + delayedCabins + delayedPainting;
   const underpartsPending = underparts.filter(
     (u) => u.work_status === "Not Finished",
+  ).length;
+  const deliveriesToday = deliveries.filter(
+    (d) => d.delivery_date === today,
   ).length;
 
   const stats = [
@@ -131,6 +140,12 @@ export default function SummaryStats({
       color: "oklch(0.6 0.15 55)",
     },
     {
+      label: "Deliveries Today",
+      value: deliveriesToday,
+      icon: Truck,
+      color: "oklch(0.6 0.2 300)",
+    },
+    {
       label: "Total Delayed",
       value: totalDelayed,
       icon: AlertTriangle,
@@ -139,7 +154,7 @@ export default function SummaryStats({
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
       {stats.map((stat, index) => (
         <StatCard key={stat.label} {...stat} index={index} />
       ))}

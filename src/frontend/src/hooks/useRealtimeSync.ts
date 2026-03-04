@@ -1,5 +1,6 @@
 import { useCabins } from "./useCabins";
 import { useContainers } from "./useContainers";
+import { useDelivery } from "./useDelivery";
 import { usePainting } from "./usePainting";
 import { useParking } from "./useParking";
 import { useUnderparts } from "./useUnderparts";
@@ -10,6 +11,7 @@ export function useRealtimeSync() {
   const painting = usePainting();
   const parking = useParking();
   const underparts = useUnderparts();
+  const delivery = useDelivery();
 
-  return { containers, cabins, painting, parking, underparts };
+  return { containers, cabins, painting, parking, underparts, delivery };
 }

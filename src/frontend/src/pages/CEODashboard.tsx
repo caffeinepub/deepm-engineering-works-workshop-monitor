@@ -2,15 +2,16 @@ import SummaryStats from "@/components/dashboard/SummaryStats";
 import Navbar from "@/components/layout/Navbar";
 import CabinsSection from "@/components/sections/CabinsSection";
 import ContainersSection from "@/components/sections/ContainersSection";
+import DeliverySection from "@/components/sections/DeliverySection";
 import PaintingSection from "@/components/sections/PaintingSection";
 import ParkingSection from "@/components/sections/ParkingSection";
 import UnderpartsSection from "@/components/sections/UnderpartsSection";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { getStoredSession } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
-import { Box, Car, Layers, Palette, Wrench } from "lucide-react";
+import { Box, Car, Layers, Palette, Truck, Wrench } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const sectionConfig = [
   {
@@ -48,14 +49,37 @@ const sectionConfig = [
     color: "oklch(0.6 0.15 55)",
     borderColor: "oklch(0.6 0.15 55 / 0.2)",
   },
+  {
+    key: "delivery",
+    label: "Delivery",
+    icon: Truck,
+    color: "oklch(0.6 0.2 300)",
+    borderColor: "oklch(0.6 0.2 300 / 0.2)",
+  },
 ] as const;
 
 export default function CEODashboard() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
-  const { containers, cabins, painting, parking, underparts } =
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const { containers, cabins, painting, parking, underparts, delivery } =
     useRealtimeSync();
+
+  // Tick the "last updated" clock every second
+  useEffect(() => {
+    const id = setInterval(() => setLastUpdated(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const formatTime = useCallback((d: Date) => {
+    return d.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  }, []);
 
   useEffect(() => {
     const session = getStoredSession();
@@ -80,11 +104,19 @@ export default function CEODashboard() {
       <Navbar userRole="ceo" email={email} />
 
       <main className="flex-1 container mx-auto px-4 py-6 max-w-7xl space-y-8">
-        <div>
-          <h1 className="text-xl font-bold text-foreground">CEO Overview</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Real-time workshop status — auto-refreshes every 20 seconds
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
+          <div>
+            <h1 className="text-xl font-bold text-foreground">CEO Overview</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Real-time workshop status — auto-refreshes every 20 seconds
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+            <span className="text-xs text-muted-foreground font-mono tabular-nums">
+              {formatTime(lastUpdated)}
+            </span>
+          </div>
         </div>
 
         <SummaryStats
@@ -93,21 +125,30 @@ export default function CEODashboard() {
           painting={painting.data}
           parking={parking.data}
           underparts={underparts.data}
+          deliveries={delivery.data}
         />
 
         {sectionConfig.map((section, idx) => {
-          const sectionData =
-            section.key === "containers"
-              ? containers
-              : section.key === "cabins"
-                ? cabins
-                : section.key === "painting"
-                  ? painting
-                  : section.key === "parking"
-                    ? parking
-                    : underparts;
-
           const Icon = section.icon;
+
+          const getSectionData = () => {
+            switch (section.key) {
+              case "containers":
+                return containers;
+              case "cabins":
+                return cabins;
+              case "painting":
+                return painting;
+              case "parking":
+                return parking;
+              case "underparts":
+                return underparts;
+              case "delivery":
+                return delivery;
+            }
+          };
+
+          const sectionData = getSectionData();
 
           return (
             <motion.section
@@ -174,6 +215,14 @@ export default function CEODashboard() {
                   data={underparts.data}
                   loading={underparts.loading}
                   error={underparts.error}
+                  isReadOnly
+                />
+              )}
+              {section.key === "delivery" && (
+                <DeliverySection
+                  data={delivery.data}
+                  loading={delivery.loading}
+                  error={delivery.error}
                   isReadOnly
                 />
               )}

@@ -38,14 +38,14 @@ export default function Navbar({ userRole, email }: NavbarProps) {
           </div>
           <div className="hidden sm:block">
             <span className="text-sm font-bold tracking-tight text-foreground">
-              DeepM
+              Deepam
             </span>
             <span className="text-sm font-light text-muted-foreground ml-1">
               Engineering Works
             </span>
           </div>
           <span className="sm:hidden text-sm font-bold text-foreground">
-            DeepM
+            Deepam
           </span>
         </div>
       </div>

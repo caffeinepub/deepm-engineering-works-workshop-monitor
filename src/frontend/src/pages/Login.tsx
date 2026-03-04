@@ -5,7 +5,7 @@ import { useActor } from "@/hooks/useActor";
 import { storeSession } from "@/lib/auth";
 import type { WorkshopRole } from "@/lib/types";
 import { useNavigate } from "@tanstack/react-router";
-import { AlertCircle, Cog, Loader2, Lock, Mail } from "lucide-react";
+import { AlertCircle, Cog, Info, Loader2, Lock, User } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 
@@ -28,14 +28,19 @@ export default function Login() {
         return;
       }
 
-      const role = await actor.login(email, password);
+      const result = await actor.login(email.trim(), password.trim());
+
+      // result is string | null — handle both direct string and array form
+      const role: string | null = Array.isArray(result)
+        ? (result[0] ?? null)
+        : result;
 
       if (!role) {
         setError("Invalid email or password. Please check your credentials.");
         return;
       }
 
-      storeSession({ email, role: role as WorkshopRole });
+      storeSession({ email: email.trim(), role: role as WorkshopRole });
 
       if (role === "manager") {
         void navigate({ to: "/manager" });
@@ -92,7 +97,7 @@ export default function Login() {
             <Cog className="w-8 h-8" style={{ color: "oklch(0.65 0.2 30)" }} />
           </div>
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            DeepM Engineering
+            Deepam Engineering
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Workshop Monitor</p>
         </div>
@@ -105,16 +110,17 @@ export default function Login() {
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="email"
-                  type="email"
+                  type="text"
                   className="h-11 pl-9 text-base"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="manager@deepm.com"
+                  placeholder="manager@deepam.com or ceo@deepam.com"
                   required
-                  autoComplete="email"
+                  autoComplete="username"
+                  data-ocid="login.input"
                 />
               </div>
             </div>
@@ -134,6 +140,7 @@ export default function Login() {
                   placeholder="••••••••••••"
                   required
                   autoComplete="current-password"
+                  data-ocid="login.textarea"
                 />
               </div>
             </div>
@@ -155,6 +162,7 @@ export default function Login() {
               type="submit"
               className="w-full h-11 bg-[oklch(0.65_0.2_30)] hover:bg-[oklch(0.58_0.2_30)] text-white font-medium mt-2"
               disabled={loading || !actor}
+              data-ocid="login.submit_button"
             >
               {loading ? (
                 <>
@@ -172,16 +180,37 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground text-center">
-              Manager or CEO access required
-            </p>
+          <div className="mt-4 pt-4 border-t border-border space-y-2">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Info className="w-3 h-3 text-muted-foreground/60" />
+              <p className="text-[11px] text-muted-foreground/60 font-medium uppercase tracking-wider">
+                Demo Credentials
+              </p>
+            </div>
+            <div className="rounded-lg bg-muted/30 border border-border/50 px-3 py-2 space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] text-muted-foreground/70 font-medium">
+                  Manager
+                </span>
+                <span className="text-[11px] font-mono text-muted-foreground/60">
+                  manager@deepam.com / manager123
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] text-muted-foreground/70 font-medium">
+                  CEO
+                </span>
+                <span className="text-[11px] font-mono text-muted-foreground/60">
+                  ceo@deepam.com / ceo123
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
 
       <p className="mt-8 text-xs text-muted-foreground/50">
-        © {new Date().getFullYear()} DeepM Engineering Works
+        © {new Date().getFullYear()} Deepam Engineering Works
       </p>
     </div>
   );

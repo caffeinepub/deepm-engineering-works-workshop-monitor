@@ -11,6 +11,7 @@ import {
 import type {
   Cabin,
   Container,
+  Delivery,
   Painting,
   Parking,
   Underpart,
@@ -22,18 +23,28 @@ import {
   Edit2,
   ImageIcon,
   Trash2,
+  Truck,
+  User,
   Users,
   X,
   ZoomIn,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-type RecordType = "container" | "cabin" | "painting" | "parking" | "underpart";
+type RecordType =
+  | "container"
+  | "cabin"
+  | "painting"
+  | "parking"
+  | "underpart"
+  | "delivery";
+
+type AnyRecord = Container | Cabin | Painting | Parking | Underpart | Delivery;
 
 interface RecordCardProps {
   type: RecordType;
-  record: Container | Cabin | Painting | Parking | Underpart;
-  onEdit?: (record: Container | Cabin | Painting | Parking | Underpart) => void;
+  record: AnyRecord;
+  onEdit?: (record: AnyRecord) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -66,12 +77,14 @@ const typeConfig: Record<
     borderColor: "border-[oklch(0.6_0.15_55_/_0.3)]",
     bgColor: "bg-[oklch(0.6_0.15_55_/_0.08)]",
   },
+  delivery: {
+    color: "text-[oklch(0.6_0.2_300)]",
+    borderColor: "border-[oklch(0.6_0.2_300_/_0.3)]",
+    bgColor: "bg-[oklch(0.6_0.2_300_/_0.08)]",
+  },
 };
 
-function getProgress(
-  type: RecordType,
-  record: Container | Cabin | Painting | Parking | Underpart,
-): number | null {
+function getProgress(type: RecordType, record: AnyRecord): number | null {
   if (type === "container")
     return getContainerProgress((record as Container).stage);
   if (type === "cabin") return getCabinProgress((record as Cabin).stage);
@@ -80,28 +93,35 @@ function getProgress(
   return null;
 }
 
-function getTitle(
-  type: RecordType,
-  record: Container | Cabin | Painting | Parking | Underpart,
-): string {
-  if (type === "cabin") return `Team ${(record as Cabin).team_no}`;
+function getTitle(type: RecordType, record: AnyRecord): string {
+  if (type === "cabin") {
+    const cabin = record as Cabin;
+    return cabin.customer_name || `Team ${cabin.team_no}`;
+  }
+  if (type === "delivery") return (record as Delivery).vehicle_no || "—";
   return (
     (record as Container | Painting | Parking | Underpart).customer_name || "—"
   );
 }
 
-function getSubtitle(
-  type: RecordType,
-  record: Container | Cabin | Painting | Parking | Underpart,
-): string {
+function getSubtitle(type: RecordType, record: AnyRecord): string {
   if (type === "container")
     return `${(record as Container).container_type} · ${(record as Container).team_leader}`;
-  if (type === "cabin") return `${(record as Cabin).cabin_type}`;
+  if (type === "cabin") {
+    const cabin = record as Cabin;
+    const parts = [`Team ${cabin.team_no}`];
+    if (cabin.cabin_type) parts.push(cabin.cabin_type);
+    return parts.join(" · ");
+  }
   if (type === "painting")
     return `Team ${(record as Painting).team_no} · ${(record as Painting).exterior_colour}`;
   if (type === "parking")
     return `Waiting for: ${(record as Parking).waiting_for}`;
   if (type === "underpart") return `Team: ${(record as Underpart).team_name}`;
+  if (type === "delivery") {
+    const d = record as Delivery;
+    return d.driver_name ? `Driver: ${d.driver_name}` : "No driver assigned";
+  }
   return "";
 }
 
@@ -118,6 +138,7 @@ export default function RecordCard({
   const title = getTitle(type, record);
   const subtitle = getSubtitle(type, record);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const closeLightbox = useCallback(() => setLightboxUrl(null), []);
 
   const hasExpectedDate = "expected_date" in record && record.expected_date;
   const delayed =
@@ -138,8 +159,10 @@ export default function RecordCard({
   const isUnderpart = type === "underpart";
   const underpartRecord = isUnderpart ? (record as Underpart) : null;
 
-  const photos =
-    (record as Container | Cabin | Painting | Parking | Underpart).photos || [];
+  const isDelivery = type === "delivery";
+  const deliveryRecord = isDelivery ? (record as Delivery) : null;
+
+  const photos = record.photos || [];
   const visiblePhotos = photos.slice(0, MAX_VISIBLE_THUMBS);
   const overflowCount = Math.max(0, photos.length - MAX_VISIBLE_THUMBS);
 
@@ -181,6 +204,16 @@ export default function RecordCard({
         </div>
 
         <div className="p-4 space-y-3">
+          {/* Customer name — prominently displayed for cabin records */}
+          {type === "cabin" && (record as Cabin).customer_name && (
+            <div className="flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+              <span className="text-xs font-semibold text-foreground break-words">
+                {(record as Cabin).customer_name}
+              </span>
+            </div>
+          )}
+
           {/* Progress bar for containers/cabins/painting */}
           {progress !== null && (
             <div className="space-y-1.5">
@@ -230,8 +263,47 @@ export default function RecordCard({
             </div>
           )}
 
+          {/* Delivery info */}
+          {isDelivery && deliveryRecord && (
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs font-semibold text-foreground break-words">
+                  {deliveryRecord.customer_name || "—"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <Truck className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">
+                  {deliveryRecord.delivery_date
+                    ? new Date(deliveryRecord.delivery_date).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        },
+                      )
+                    : "—"}
+                </span>
+                {(() => {
+                  const today = new Date();
+                  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+                  return deliveryRecord.delivery_date === todayStr ? (
+                    <Badge
+                      className="text-[10px] px-1.5 py-0 h-4 bg-[oklch(0.6_0.2_300_/_0.15)] text-[oklch(0.6_0.2_300)] border-[oklch(0.6_0.2_300_/_0.4)]"
+                      variant="outline"
+                    >
+                      Today
+                    </Badge>
+                  ) : null;
+                })()}
+              </div>
+            </div>
+          )}
+
           {/* Expected date */}
-          {hasExpectedDate && !isParking && (
+          {hasExpectedDate && !isParking && !isDelivery && (
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
               <span className="text-xs text-muted-foreground">
@@ -319,6 +391,7 @@ export default function RecordCard({
                   size="sm"
                   className="h-9 text-xs flex-1 min-w-0"
                   onClick={() => onEdit(record)}
+                  data-ocid="record.edit_button"
                 >
                   <Edit2 className="w-3 h-3 mr-1.5 flex-shrink-0" />
                   Edit
@@ -330,6 +403,7 @@ export default function RecordCard({
                   size="sm"
                   className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 flex-shrink-0"
                   onClick={() => onDelete(record.id)}
+                  data-ocid="record.delete_button"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
@@ -339,36 +413,46 @@ export default function RecordCard({
         </div>
       </div>
 
-      {/* Lightbox */}
-      {lightboxUrl && (
-        <button
-          type="button"
-          className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4"
-          onClick={() => setLightboxUrl(null)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape" || e.key === "Enter") setLightboxUrl(null);
-          }}
-          aria-label="Close lightbox"
+      {/* Lightbox — always mounted, toggled via opacity/pointer-events for instant close */}
+      <button
+        type="button"
+        tabIndex={lightboxUrl ? 0 : -1}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-150"
+        style={{
+          background: "rgba(0,0,0,0.85)",
+          opacity: lightboxUrl ? 1 : 0,
+          pointerEvents: lightboxUrl ? "auto" : "none",
+          willChange: "opacity",
+        }}
+        onClick={closeLightbox}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" || e.key === "Enter") closeLightbox();
+        }}
+        aria-label="Close lightbox"
+      >
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: stop-propagation wrapper, keyboard close handled by parent button */}
+        <div
+          className="relative max-w-[90vw] max-h-[90vh]"
+          onClick={(e) => e.stopPropagation()}
+          style={{ willChange: "transform" }}
         >
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: stop-propagation wrapper, keyboard close handled by parent button */}
-          <div
-            className="relative max-w-[90vw] max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
+          {lightboxUrl && (
             <img
               src={lightboxUrl}
               alt="Full size"
               className="max-w-full max-h-[85vh] rounded-lg object-contain shadow-2xl"
+              loading="lazy"
+              decoding="async"
             />
-            <span
-              className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shadow-lg hover:bg-muted transition-colors"
-              aria-hidden="true"
-            >
-              <X className="w-4 h-4" />
-            </span>
-          </div>
-        </button>
-      )}
+          )}
+          <span
+            className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shadow-lg hover:bg-muted transition-colors"
+            aria-hidden="true"
+          >
+            <X className="w-4 h-4" />
+          </span>
+        </div>
+      </button>
     </>
   );
 }

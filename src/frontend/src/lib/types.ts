@@ -1,9 +1,9 @@
 export interface Container {
   id: string;
-  team_leader: string; // Raja, Vinoth, Ashok, Prasanth
+  team_leader: string;
   customer_name: string;
   container_type: string;
-  stage: string; // Not Started, Basement, Door Rear End, Door Front End, Sidewall, Roofing
+  stage: string;
   expected_date: string;
   notes: string;
   photos: string[];
@@ -13,10 +13,10 @@ export interface Container {
 
 export interface Cabin {
   id: string;
-  team_no: string; // 1,2,3,4,5
-  cabin_type: string; // Straight Type, Karur Grill, Aerodynamic, Centered Glass, Curved Type
-  stage: string; // Not Started, Cage Angle, Wood Chips, Back Plywood, Aluminium Sheet, Soset
-  start_date: string;
+  customer_name: string; // stored in backend's startDate field
+  team_no: string;
+  cabin_type: string;
+  stage: string;
   expected_date: string;
   notes: string;
   photos: string[];
@@ -26,11 +26,11 @@ export interface Cabin {
 
 export interface Painting {
   id: string;
-  team_no: string; // 1, 2
+  team_no: string;
   customer_name: string;
   interior_colour: string;
   exterior_colour: string;
-  stage: string; // Not Started, Primer Done, Fully Painted
+  stage: string;
   expected_date: string;
   notes: string;
   photos: string[];
@@ -51,9 +51,21 @@ export interface Parking {
 
 export interface Underpart {
   id: string;
-  team_name: string; // Mani, Thangavel
+  team_name: string;
   customer_name: string;
-  work_status: string; // Not Finished, Finished
+  work_status: string;
+  notes: string;
+  photos: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Delivery {
+  id: string;
+  vehicle_no: string;
+  customer_name: string;
+  delivery_date: string;
+  driver_name: string;
   notes: string;
   photos: string[];
   created_at: string;

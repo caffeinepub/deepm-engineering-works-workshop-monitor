@@ -7,8 +7,6 @@ import List "mo:core/List";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 
-
-
 actor {
   include MixinStorage();
 
@@ -136,10 +134,10 @@ actor {
   let underparts = Map.empty<Nat, Underpart>();
 
   public shared ({ caller }) func login(email : Text, password : Text) : async ?Text {
-    if (email == "manager@deepm.com" and password == "manager123") {
+    if (email == "manager@deepam.com" and password == "manager123") {
       return ?("manager");
     };
-    if (email == "ceo@deepm.com" and password == "ceo123") {
+    if (email == "ceo@deepam.com" and password == "ceo123") {
       return ?("ceo");
     };
     null;
