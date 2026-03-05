@@ -89,18 +89,75 @@ export class ExternalBlob {
         return this;
     }
 }
-export type Photo = Uint8Array;
-export interface Cabin {
-    id: bigint;
-    createdAt: bigint;
-    updatedAt: bigint;
+export interface UserProfile {
+    name: string;
+    role: string;
+    email: string;
+}
+export interface DeliveryInput {
+    customerName: string;
+    teamName: string;
+    deliveryDate: string;
+    notes: string;
+    customName: string;
+    driverName: string;
+    photos: Array<Photo>;
+    vehicleNo: string;
+}
+export interface CabinInput {
+    customerName: string;
     stage: string;
     notes: string;
+    customName: string;
     cabinType: string;
     teamNo: string;
     expectedDate: string;
     photos: Array<Photo>;
     startDate: string;
+}
+export interface DailyUpdateInput {
+    status: string;
+    date: string;
+    monthLabel: string;
+    section: string;
+    delays: string;
+    notes: string;
+    weekLabel: string;
+    shiftType: string;
+    stageProgress: string;
+    photos: Array<Photo>;
+    workDone: string;
+}
+export interface Cabin {
+    id: bigint;
+    customerName: string;
+    createdAt: bigint;
+    updatedAt: bigint;
+    stage: string;
+    notes: string;
+    customName: string;
+    cabinType: string;
+    teamNo: string;
+    expectedDate: string;
+    photos: Array<Photo>;
+    startDate: string;
+}
+export interface WeeklyReportInput {
+    status: string;
+    paintingSummary: string;
+    month: bigint;
+    weekEnd: string;
+    cabinSummary: string;
+    totalUpdates: bigint;
+    containerSummary: string;
+    overallNotes: string;
+    underpartsSummary: string;
+    year: bigint;
+    monthLabel: string;
+    weekNumber: bigint;
+    parkingSummary: string;
+    weekLabel: string;
+    weekStart: string;
 }
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
@@ -110,21 +167,73 @@ export interface PaintingInput {
     stage: string;
     exteriorColour: string;
     notes: string;
+    customName: string;
     teamNo: string;
     expectedDate: string;
     interiorColour: string;
     photos: Array<Photo>;
 }
-export interface UnderpartInput {
+export interface WorkOrder {
+    id: bigint;
     customerName: string;
-    teamName: string;
+    status: string;
+    title: string;
+    createdAt: bigint;
+    section: string;
+    description: string;
+    updatedAt: bigint;
     notes: string;
-    workStatus: string;
+    assignedTeam: string;
+    expectedDate: string;
+    weekLabel: string;
     photos: Array<Photo>;
+}
+export interface WeeklyReport {
+    id: bigint;
+    status: string;
+    paintingSummary: string;
+    month: bigint;
+    weekEnd: string;
+    cabinSummary: string;
+    totalUpdates: bigint;
+    containerSummary: string;
+    createdAt: bigint;
+    overallNotes: string;
+    underpartsSummary: string;
+    year: bigint;
+    monthLabel: string;
+    weekNumber: bigint;
+    parkingSummary: string;
+    weekLabel: string;
+    weekStart: string;
+    archivedAt: bigint;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
+}
+export interface UnderpartInput {
+    customerName: string;
+    teamName: string;
+    notes: string;
+    customName: string;
+    workStatus: string;
+    photos: Array<Photo>;
+}
+export interface MonthlyArchive {
+    id: bigint;
+    weekLabels: Array<string>;
+    month: bigint;
+    overallSummary: string;
+    totalDelays: bigint;
+    createdAt: bigint;
+    year: bigint;
+    monthLabel: string;
+    totalUnderparts: bigint;
+    totalParkings: bigint;
+    totalCabins: bigint;
+    totalContainers: bigint;
+    totalPaintings: bigint;
 }
 export interface Parking {
     id: bigint;
@@ -134,6 +243,7 @@ export interface Parking {
     createdAt: bigint;
     updatedAt: bigint;
     notes: string;
+    customName: string;
     photos: Array<Photo>;
 }
 export interface ContainerInput {
@@ -142,6 +252,7 @@ export interface ContainerInput {
     stage: string;
     teamLeader: string;
     notes: string;
+    customName: string;
     expectedDate: string;
     photos: Array<Photo>;
 }
@@ -150,7 +261,21 @@ export interface ParkingInput {
     entryDate: string;
     waitingFor: string;
     notes: string;
+    customName: string;
     photos: Array<Photo>;
+}
+export interface MonthlyArchiveInput {
+    weekLabels: Array<string>;
+    month: bigint;
+    overallSummary: string;
+    totalDelays: bigint;
+    year: bigint;
+    monthLabel: string;
+    totalUnderparts: bigint;
+    totalParkings: bigint;
+    totalCabins: bigint;
+    totalContainers: bigint;
+    totalPaintings: bigint;
 }
 export interface Container {
     id: bigint;
@@ -161,7 +286,46 @@ export interface Container {
     stage: string;
     teamLeader: string;
     notes: string;
+    customName: string;
     expectedDate: string;
+    photos: Array<Photo>;
+}
+export interface Delivery {
+    customerName: string;
+    teamName: string;
+    createdAt: bigint;
+    deliveryDate: string;
+    notes: string;
+    customName: string;
+    driverName: string;
+    photos: Array<Photo>;
+    vehicleNo: string;
+}
+export interface DailyUpdate {
+    id: bigint;
+    status: string;
+    date: string;
+    createdAt: bigint;
+    monthLabel: string;
+    section: string;
+    delays: string;
+    notes: string;
+    weekLabel: string;
+    shiftType: string;
+    stageProgress: string;
+    photos: Array<Photo>;
+    workDone: string;
+}
+export interface WorkOrderInput {
+    customerName: string;
+    status: string;
+    title: string;
+    section: string;
+    description: string;
+    notes: string;
+    assignedTeam: string;
+    expectedDate: string;
+    weekLabel: string;
     photos: Array<Photo>;
 }
 export interface Painting {
@@ -172,6 +336,7 @@ export interface Painting {
     stage: string;
     exteriorColour: string;
     notes: string;
+    customName: string;
     teamNo: string;
     expectedDate: string;
     interiorColour: string;
@@ -184,21 +349,19 @@ export interface Underpart {
     createdAt: bigint;
     updatedAt: bigint;
     notes: string;
+    customName: string;
     workStatus: string;
     photos: Array<Photo>;
-}
-export interface CabinInput {
-    stage: string;
-    notes: string;
-    cabinType: string;
-    teamNo: string;
-    expectedDate: string;
-    photos: Array<Photo>;
-    startDate: string;
 }
 export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
+}
+export type Photo = Uint8Array;
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
 }
 export interface backendInterface {
     _caffeineStorageBlobIsLive(hash: Uint8Array): Promise<boolean>;
@@ -207,29 +370,54 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
-    addCabin(input: CabinInput): Promise<bigint>;
-    addContainer(input: ContainerInput): Promise<bigint>;
-    addPainting(input: PaintingInput): Promise<bigint>;
-    addParking(input: ParkingInput): Promise<bigint>;
-    addUnderpart(input: UnderpartInput): Promise<bigint>;
-    deleteCabin(id: bigint): Promise<boolean>;
-    deleteContainer(id: bigint): Promise<boolean>;
-    deletePainting(id: bigint): Promise<boolean>;
-    deleteParking(id: bigint): Promise<boolean>;
-    deleteUnderpart(id: bigint): Promise<boolean>;
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    addCabin(input: CabinInput): Promise<void>;
+    addContainer(input: ContainerInput): Promise<void>;
+    addDailyUpdate(input: DailyUpdateInput): Promise<void>;
+    addDelivery(input: DeliveryInput): Promise<void>;
+    addMonthlyArchive(input: MonthlyArchiveInput): Promise<void>;
+    addPainting(input: PaintingInput): Promise<void>;
+    addParking(input: ParkingInput): Promise<void>;
+    addUnderpart(input: UnderpartInput): Promise<void>;
+    addWeeklyReport(input: WeeklyReportInput): Promise<void>;
+    addWorkOrder(input: WorkOrderInput): Promise<void>;
+    archiveDailyUpdatesForWeek(weekLabel: string): Promise<void>;
+    archiveWeeklyReportToMonth(weekLabel: string): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    deleteCabin(id: bigint): Promise<void>;
+    deleteContainer(id: bigint): Promise<void>;
+    deletePainting(id: bigint): Promise<void>;
+    deleteParking(id: bigint): Promise<void>;
+    deleteUnderpart(id: bigint): Promise<void>;
+    deleteWorkOrder(id: bigint): Promise<void>;
     getCabins(): Promise<Array<Cabin>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
     getContainers(): Promise<Array<Container>>;
+    getDailyUpdates(): Promise<Array<DailyUpdate>>;
+    getDailyUpdatesByDate(date: string): Promise<Array<DailyUpdate>>;
+    getDailyUpdatesByStatus(status: string): Promise<Array<DailyUpdate>>;
+    getDailyUpdatesByWeek(weekLabel: string): Promise<Array<DailyUpdate>>;
+    getDeliveries(): Promise<Array<Delivery>>;
+    getMonthlyArchives(): Promise<Array<MonthlyArchive>>;
     getPaintings(): Promise<Array<Painting>>;
     getParkings(): Promise<Array<Parking>>;
     getUnderparts(): Promise<Array<Underpart>>;
-    login(email: string, password: string): Promise<string | null>;
-    updateCabin(id: bigint, input: CabinInput): Promise<boolean>;
-    updateContainer(id: bigint, input: ContainerInput): Promise<boolean>;
-    updatePainting(id: bigint, input: PaintingInput): Promise<boolean>;
-    updateParking(id: bigint, input: ParkingInput): Promise<boolean>;
-    updateUnderpart(id: bigint, input: UnderpartInput): Promise<boolean>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    getWeeklyReports(): Promise<Array<WeeklyReport>>;
+    getWeeklyReportsByMonth(year: bigint, month: bigint): Promise<Array<WeeklyReport>>;
+    getWorkOrders(): Promise<Array<WorkOrder>>;
+    isCallerAdmin(): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateCabin(id: bigint, input: CabinInput): Promise<void>;
+    updateContainer(id: bigint, input: ContainerInput): Promise<void>;
+    updateMonthlyArchive(id: bigint, input: MonthlyArchiveInput): Promise<void>;
+    updatePainting(id: bigint, input: PaintingInput): Promise<void>;
+    updateParking(id: bigint, input: ParkingInput): Promise<void>;
+    updateUnderpart(id: bigint, input: UnderpartInput): Promise<void>;
+    updateWorkOrder(id: bigint, input: WorkOrderInput): Promise<void>;
 }
-import type { _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -316,7 +504,21 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addCabin(arg0: CabinInput): Promise<bigint> {
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._initializeAccessControlWithSecret(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
+    async addCabin(arg0: CabinInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addCabin(arg0);
@@ -330,7 +532,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addContainer(arg0: ContainerInput): Promise<bigint> {
+    async addContainer(arg0: ContainerInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addContainer(arg0);
@@ -344,7 +546,49 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addPainting(arg0: PaintingInput): Promise<bigint> {
+    async addDailyUpdate(arg0: DailyUpdateInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addDailyUpdate(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addDailyUpdate(arg0);
+            return result;
+        }
+    }
+    async addDelivery(arg0: DeliveryInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addDelivery(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addDelivery(arg0);
+            return result;
+        }
+    }
+    async addMonthlyArchive(arg0: MonthlyArchiveInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addMonthlyArchive(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addMonthlyArchive(arg0);
+            return result;
+        }
+    }
+    async addPainting(arg0: PaintingInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addPainting(arg0);
@@ -358,7 +602,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addParking(arg0: ParkingInput): Promise<bigint> {
+    async addParking(arg0: ParkingInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addParking(arg0);
@@ -372,7 +616,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addUnderpart(arg0: UnderpartInput): Promise<bigint> {
+    async addUnderpart(arg0: UnderpartInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addUnderpart(arg0);
@@ -386,7 +630,77 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteCabin(arg0: bigint): Promise<boolean> {
+    async addWeeklyReport(arg0: WeeklyReportInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addWeeklyReport(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addWeeklyReport(arg0);
+            return result;
+        }
+    }
+    async addWorkOrder(arg0: WorkOrderInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addWorkOrder(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addWorkOrder(arg0);
+            return result;
+        }
+    }
+    async archiveDailyUpdatesForWeek(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.archiveDailyUpdatesForWeek(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.archiveDailyUpdatesForWeek(arg0);
+            return result;
+        }
+    }
+    async archiveWeeklyReportToMonth(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.archiveWeeklyReportToMonth(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.archiveWeeklyReportToMonth(arg0);
+            return result;
+        }
+    }
+    async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async deleteCabin(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.deleteCabin(arg0);
@@ -400,7 +714,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteContainer(arg0: bigint): Promise<boolean> {
+    async deleteContainer(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.deleteContainer(arg0);
@@ -414,7 +728,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deletePainting(arg0: bigint): Promise<boolean> {
+    async deletePainting(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.deletePainting(arg0);
@@ -428,7 +742,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteParking(arg0: bigint): Promise<boolean> {
+    async deleteParking(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.deleteParking(arg0);
@@ -442,7 +756,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteUnderpart(arg0: bigint): Promise<boolean> {
+    async deleteUnderpart(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.deleteUnderpart(arg0);
@@ -453,6 +767,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.deleteUnderpart(arg0);
+            return result;
+        }
+    }
+    async deleteWorkOrder(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteWorkOrder(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteWorkOrder(arg0);
             return result;
         }
     }
@@ -470,6 +798,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserRole();
+                return from_candid_UserRole_n11(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserRole();
+            return from_candid_UserRole_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getContainers(): Promise<Array<Container>> {
         if (this.processError) {
             try {
@@ -481,6 +837,90 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getContainers();
+            return result;
+        }
+    }
+    async getDailyUpdates(): Promise<Array<DailyUpdate>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDailyUpdates();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDailyUpdates();
+            return result;
+        }
+    }
+    async getDailyUpdatesByDate(arg0: string): Promise<Array<DailyUpdate>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDailyUpdatesByDate(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDailyUpdatesByDate(arg0);
+            return result;
+        }
+    }
+    async getDailyUpdatesByStatus(arg0: string): Promise<Array<DailyUpdate>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDailyUpdatesByStatus(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDailyUpdatesByStatus(arg0);
+            return result;
+        }
+    }
+    async getDailyUpdatesByWeek(arg0: string): Promise<Array<DailyUpdate>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDailyUpdatesByWeek(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDailyUpdatesByWeek(arg0);
+            return result;
+        }
+    }
+    async getDeliveries(): Promise<Array<Delivery>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDeliveries();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDeliveries();
+            return result;
+        }
+    }
+    async getMonthlyArchives(): Promise<Array<MonthlyArchive>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMonthlyArchives();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMonthlyArchives();
             return result;
         }
     }
@@ -526,21 +966,91 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async login(arg0: string, arg1: string): Promise<string | null> {
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.login(arg0, arg1);
-                return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.login(arg0, arg1);
-            return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
         }
     }
-    async updateCabin(arg0: bigint, arg1: CabinInput): Promise<boolean> {
+    async getWeeklyReports(): Promise<Array<WeeklyReport>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getWeeklyReports();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getWeeklyReports();
+            return result;
+        }
+    }
+    async getWeeklyReportsByMonth(arg0: bigint, arg1: bigint): Promise<Array<WeeklyReport>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getWeeklyReportsByMonth(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getWeeklyReportsByMonth(arg0, arg1);
+            return result;
+        }
+    }
+    async getWorkOrders(): Promise<Array<WorkOrder>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getWorkOrders();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getWorkOrders();
+            return result;
+        }
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async updateCabin(arg0: bigint, arg1: CabinInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updateCabin(arg0, arg1);
@@ -554,7 +1064,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateContainer(arg0: bigint, arg1: ContainerInput): Promise<boolean> {
+    async updateContainer(arg0: bigint, arg1: ContainerInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updateContainer(arg0, arg1);
@@ -568,7 +1078,21 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updatePainting(arg0: bigint, arg1: PaintingInput): Promise<boolean> {
+    async updateMonthlyArchive(arg0: bigint, arg1: MonthlyArchiveInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateMonthlyArchive(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateMonthlyArchive(arg0, arg1);
+            return result;
+        }
+    }
+    async updatePainting(arg0: bigint, arg1: PaintingInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updatePainting(arg0, arg1);
@@ -582,7 +1106,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateParking(arg0: bigint, arg1: ParkingInput): Promise<boolean> {
+    async updateParking(arg0: bigint, arg1: ParkingInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updateParking(arg0, arg1);
@@ -596,7 +1120,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateUnderpart(arg0: bigint, arg1: UnderpartInput): Promise<boolean> {
+    async updateUnderpart(arg0: bigint, arg1: UnderpartInput): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updateUnderpart(arg0, arg1);
@@ -610,17 +1134,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateWorkOrder(arg0: bigint, arg1: WorkOrderInput): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateWorkOrder(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateWorkOrder(arg0, arg1);
+            return result;
+        }
+    }
+}
+function from_candid_UserRole_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n12(_uploadFile, _downloadFile, value);
 }
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
-    return value.length === 0 ? null : value[0];
-}
-function from_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -634,6 +1175,18 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         success: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.success)),
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
+}
+function from_candid_variant_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
+}
+function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n9(_uploadFile, _downloadFile, value);
 }
 function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation): __CaffeineStorageRefillInformation {
     return to_candid_record_n3(_uploadFile, _downloadFile, value);
@@ -649,6 +1202,21 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return {
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
+}
+function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+} {
+    return value == UserRole.admin ? {
+        admin: null
+    } : value == UserRole.user ? {
+        user: null
+    } : value == UserRole.guest ? {
+        guest: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -22,6 +22,7 @@ import {
   Clock,
   Edit2,
   ImageIcon,
+  Tag,
   Trash2,
   Truck,
   User,
@@ -213,6 +214,33 @@ export default function RecordCard({
               </span>
             </div>
           )}
+
+          {/* Custom name — shown for all record types if set */}
+          {"custom_name" in record &&
+            (record as { custom_name: string }).custom_name && (
+              <div className="flex items-center gap-1.5">
+                <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs text-muted-foreground break-words">
+                  {(record as { custom_name: string }).custom_name}
+                </span>
+              </div>
+            )}
+
+          {/* Team name — shown for Delivery records if set */}
+          {isDelivery &&
+            deliveryRecord &&
+            (deliveryRecord as Delivery & { team_name?: string }).team_name && (
+              <div className="flex items-center gap-1.5">
+                <Users className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs text-muted-foreground break-words">
+                  Team:{" "}
+                  {
+                    (deliveryRecord as Delivery & { team_name?: string })
+                      .team_name
+                  }
+                </span>
+              </div>
+            )}
 
           {/* Progress bar for containers/cabins/painting */}
           {progress !== null && (

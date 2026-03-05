@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 function mapContainerRaw(raw: {
   id: bigint;
   customerName: string;
+  customName: string;
   containerType: string;
   stage: string;
   teamLeader: string;
@@ -18,6 +19,7 @@ function mapContainerRaw(raw: {
   return {
     id: raw.id.toString(),
     customer_name: raw.customerName,
+    custom_name: raw.customName || "",
     container_type: raw.containerType,
     stage: raw.stage,
     team_leader: raw.teamLeader,
@@ -79,6 +81,7 @@ export function useContainers() {
     const photoBytes = await uploadPhotoFiles(item.photoFiles || []);
     const id = await actor.addContainer({
       customerName: item.customer_name,
+      customName: item.custom_name || "",
       containerType: item.container_type,
       stage: item.stage,
       teamLeader: item.team_leader,
@@ -107,6 +110,7 @@ export function useContainers() {
 
     await actor.updateContainer(BigInt(id), {
       customerName: merged.customer_name,
+      customName: merged.custom_name || "",
       containerType: merged.container_type,
       stage: merged.stage,
       teamLeader: merged.team_leader,

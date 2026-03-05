@@ -46,6 +46,7 @@ export default function PaintingForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [interiorColour, setInteriorColour] = useState(
     initial?.interior_colour || "",
   );
@@ -65,6 +66,7 @@ export default function PaintingForm({
     if (initial) {
       setTeamNo(initial.team_no || "");
       setCustomerName(initial.customer_name || "");
+      setCustomName(initial.custom_name || "");
       setInteriorColour(initial.interior_colour || "");
       setExteriorColour(initial.exterior_colour || "");
       setStage(initial.stage || "Not Started");
@@ -74,6 +76,7 @@ export default function PaintingForm({
     } else {
       setTeamNo("");
       setCustomerName("");
+      setCustomName("");
       setInteriorColour("");
       setExteriorColour("");
       setStage("Not Started");
@@ -95,6 +98,7 @@ export default function PaintingForm({
       await onSubmit({
         team_no: teamNo,
         customer_name: customerName,
+        custom_name: customName,
         interior_colour: interiorColour,
         exterior_colour: exteriorColour,
         stage,
@@ -145,6 +149,16 @@ export default function PaintingForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Muthukumar Freight"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Custom Name</Label>
+            <Input
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

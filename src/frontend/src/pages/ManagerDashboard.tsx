@@ -1,26 +1,10 @@
 import Navbar from "@/components/layout/Navbar";
-import CabinsSection from "@/components/sections/CabinsSection";
-import ContainersSection from "@/components/sections/ContainersSection";
-import DeliverySection from "@/components/sections/DeliverySection";
-import PaintingSection from "@/components/sections/PaintingSection";
-import ParkingSection from "@/components/sections/ParkingSection";
-import UnderpartsSection from "@/components/sections/UnderpartsSection";
+import DailyUpdateTab from "@/components/sections/DailyUpdateTab";
+import WorkOrdersSection from "@/components/sections/WorkOrdersSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCabins } from "@/hooks/useCabins";
-import { useContainers } from "@/hooks/useContainers";
-import { useDelivery } from "@/hooks/useDelivery";
-import { usePainting } from "@/hooks/usePainting";
-import { useParking } from "@/hooks/useParking";
-import { useUnderparts } from "@/hooks/useUnderparts";
+import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { getStoredSession } from "@/lib/auth";
-import type {
-  Cabin,
-  Container,
-  Delivery,
-  Painting,
-  Parking,
-  Underpart,
-} from "@/lib/types";
+import type { WorkOrder } from "@/lib/types";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -29,12 +13,7 @@ export default function ManagerDashboard() {
   const [email, setEmail] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
 
-  const containers = useContainers();
-  const cabins = useCabins();
-  const painting = usePainting();
-  const parking = useParking();
-  const underparts = useUnderparts();
-  const delivery = useDelivery();
+  const workOrders = useWorkOrders();
 
   useEffect(() => {
     const session = getStoredSession();
@@ -72,68 +51,44 @@ export default function ManagerDashboard() {
           </p>
         </div>
 
-        <Tabs defaultValue="containers" className="w-full">
+        <Tabs defaultValue="dailyupdate" className="w-full">
           {/* Scrollable horizontal tab bar on mobile */}
           <div className="overflow-x-auto mb-6">
             <TabsList className="h-auto p-1 flex flex-nowrap gap-1 bg-card border border-border w-max min-w-full">
               <TabsTrigger
-                value="containers"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.65_0.2_30_/_0.15)] data-[state=active]:text-[oklch(0.65_0.2_30)]"
-                data-ocid="containers.tab"
+                value="dailyupdate"
+                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.55_0.2_145_/_0.15)] data-[state=active]:text-[oklch(0.55_0.2_145)]"
+                data-ocid="daily_update.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">
-                  Containers
+                  Daily Report
                 </span>
               </TabsTrigger>
               <TabsTrigger
-                value="cabins"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.2_250_/_0.15)] data-[state=active]:text-[oklch(0.6_0.2_250)]"
-                data-ocid="cabins.tab"
-              >
-                <span className="text-xs sm:text-sm font-medium">Cabins</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="painting"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.75_0.18_85_/_0.15)] data-[state=active]:text-[oklch(0.75_0.18_85)]"
-                data-ocid="painting.tab"
-              >
-                <span className="text-xs sm:text-sm font-medium">Painting</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="parking"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.65_0.18_145_/_0.15)] data-[state=active]:text-[oklch(0.65_0.18_145)]"
-                data-ocid="parking.tab"
-              >
-                <span className="text-xs sm:text-sm font-medium">Parking</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="underparts"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.15_55_/_0.15)] data-[state=active]:text-[oklch(0.6_0.15_55)]"
-                data-ocid="underparts.tab"
+                value="workorders"
+                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.55_0.2_195_/_0.15)] data-[state=active]:text-[oklch(0.55_0.2_195)]"
+                data-ocid="workorders.tab"
               >
                 <span className="text-xs sm:text-sm font-medium">
-                  Underparts
+                  Work Orders
                 </span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="delivery"
-                className="flex-shrink-0 h-10 px-4 whitespace-nowrap data-[state=active]:bg-[oklch(0.6_0.2_300_/_0.15)] data-[state=active]:text-[oklch(0.6_0.2_300)]"
-                data-ocid="delivery.tab"
-              >
-                <span className="text-xs sm:text-sm font-medium">Delivery</span>
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value="containers">
-            <ContainersSection
-              data={containers.data}
-              loading={containers.loading}
-              error={containers.error}
+          <TabsContent value="dailyupdate">
+            <DailyUpdateTab />
+          </TabsContent>
+
+          <TabsContent value="workorders">
+            <WorkOrdersSection
+              data={workOrders.data}
+              loading={workOrders.loading}
+              error={workOrders.error}
               onInsert={(data) =>
-                containers.insert(
+                workOrders.insert(
                   data as Omit<
-                    Container,
+                    WorkOrder,
                     "id" | "created_at" | "updated_at"
                   > & {
                     photoFiles?: File[];
@@ -141,144 +96,15 @@ export default function ManagerDashboard() {
                 )
               }
               onUpdate={(id, data) =>
-                containers.update(
+                workOrders.update(
                   id,
-                  data as Partial<Container> & {
+                  data as Partial<WorkOrder> & {
                     photoFiles?: File[];
                     keptPhotoUrls?: string[];
                   },
                 )
               }
-              onDelete={containers.remove}
-            />
-          </TabsContent>
-
-          <TabsContent value="cabins">
-            <CabinsSection
-              data={cabins.data}
-              loading={cabins.loading}
-              error={cabins.error}
-              onInsert={(data) =>
-                cabins.insert(
-                  data as Omit<Cabin, "id" | "created_at" | "updated_at"> & {
-                    photoFiles?: File[];
-                  },
-                )
-              }
-              onUpdate={(id, data) =>
-                cabins.update(
-                  id,
-                  data as Partial<Cabin> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onDelete={cabins.remove}
-            />
-          </TabsContent>
-
-          <TabsContent value="painting">
-            <PaintingSection
-              data={painting.data}
-              loading={painting.loading}
-              error={painting.error}
-              onInsert={(data) =>
-                painting.insert(
-                  data as Omit<Painting, "id" | "created_at" | "updated_at"> & {
-                    photoFiles?: File[];
-                  },
-                )
-              }
-              onUpdate={(id, data) =>
-                painting.update(
-                  id,
-                  data as Partial<Painting> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onDelete={painting.remove}
-            />
-          </TabsContent>
-
-          <TabsContent value="parking">
-            <ParkingSection
-              data={parking.data}
-              loading={parking.loading}
-              error={parking.error}
-              onInsert={(data) =>
-                parking.insert(
-                  data as Omit<Parking, "id" | "created_at" | "updated_at"> & {
-                    photoFiles?: File[];
-                  },
-                )
-              }
-              onUpdate={(id, data) =>
-                parking.update(
-                  id,
-                  data as Partial<Parking> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onDelete={parking.remove}
-            />
-          </TabsContent>
-
-          <TabsContent value="underparts">
-            <UnderpartsSection
-              data={underparts.data}
-              loading={underparts.loading}
-              error={underparts.error}
-              onInsert={(data) =>
-                underparts.insert(
-                  data as Omit<
-                    Underpart,
-                    "id" | "created_at" | "updated_at"
-                  > & {
-                    photoFiles?: File[];
-                  },
-                )
-              }
-              onUpdate={(id, data) =>
-                underparts.update(
-                  id,
-                  data as Partial<Underpart> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onDelete={underparts.remove}
-            />
-          </TabsContent>
-
-          <TabsContent value="delivery">
-            <DeliverySection
-              data={delivery.data}
-              loading={delivery.loading}
-              error={delivery.error}
-              onInsert={(data) =>
-                delivery.insert(
-                  data as Omit<Delivery, "id" | "created_at" | "updated_at"> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onUpdate={(id, data) =>
-                delivery.update(
-                  id,
-                  data as Partial<Delivery> & {
-                    photoFiles?: File[];
-                    keptPhotoUrls?: string[];
-                  },
-                )
-              }
-              onDelete={delivery.remove}
+              onDelete={workOrders.remove}
             />
           </TabsContent>
         </Tabs>

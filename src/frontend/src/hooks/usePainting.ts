@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 function mapPaintingRaw(raw: {
   id: bigint;
   customerName: string;
+  customName: string;
   teamNo: string;
   interiorColour: string;
   exteriorColour: string;
@@ -19,6 +20,7 @@ function mapPaintingRaw(raw: {
   return {
     id: raw.id.toString(),
     customer_name: raw.customerName,
+    custom_name: raw.customName || "",
     team_no: raw.teamNo,
     interior_colour: raw.interiorColour,
     exterior_colour: raw.exteriorColour,
@@ -80,6 +82,7 @@ export function usePainting() {
     const photoBytes = await uploadPhotoFiles(item.photoFiles || []);
     const id = await actor.addPainting({
       customerName: item.customer_name,
+      customName: item.custom_name || "",
       teamNo: item.team_no,
       interiorColour: item.interior_colour,
       exteriorColour: item.exterior_colour,
@@ -108,6 +111,7 @@ export function usePainting() {
 
     await actor.updatePainting(BigInt(id), {
       customerName: merged.customer_name,
+      customName: merged.custom_name || "",
       teamNo: merged.team_no,
       interiorColour: merged.interior_colour,
       exteriorColour: merged.exterior_colour,

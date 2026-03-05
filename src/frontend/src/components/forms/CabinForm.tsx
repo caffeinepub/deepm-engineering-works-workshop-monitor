@@ -59,6 +59,7 @@ export default function CabinForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [teamNo, setTeamNo] = useState(initial?.team_no || "");
   const [cabinType, setCabinType] = useState(initial?.cabin_type || "");
   const [stage, setStage] = useState(initial?.stage || "Not Started");
@@ -73,6 +74,7 @@ export default function CabinForm({
   useEffect(() => {
     if (initial) {
       setCustomerName(initial.customer_name || "");
+      setCustomName(initial.custom_name || "");
       setTeamNo(initial.team_no || "");
       setCabinType(initial.cabin_type || "");
       setStage(initial.stage || "Not Started");
@@ -81,6 +83,7 @@ export default function CabinForm({
       setKeptPhotoUrls(initial.photos || []);
     } else {
       setCustomerName("");
+      setCustomName("");
       setTeamNo("");
       setCabinType("");
       setStage("Not Started");
@@ -109,6 +112,7 @@ export default function CabinForm({
     try {
       await onSubmit({
         customer_name: customerName.trim(),
+        custom_name: customName,
         team_no: teamNo,
         cabin_type: cabinType,
         stage,
@@ -144,6 +148,17 @@ export default function CabinForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Kumar Transports"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Custom Name</Label>
+            <Input
+              type="text"
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

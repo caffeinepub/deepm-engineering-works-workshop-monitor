@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useActor } from "@/hooks/useActor";
 import { storeSession } from "@/lib/auth";
 import type { WorkshopRole } from "@/lib/types";
 import { useNavigate } from "@tanstack/react-router";
@@ -15,7 +14,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { actor } = useActor();
+
+  const CREDENTIALS: Record<string, { password: string; role: WorkshopRole }> =
+    {
+      "manager@deepam.com": { password: "manager123", role: "manager" },
+      "ceo@deepam.com": { password: "ceo123", role: "ceo" },
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,31 +27,21 @@ export default function Login() {
     setLoading(true);
 
     try {
-      if (!actor) {
-        setError("System is initializing. Please wait a moment and try again.");
-        return;
-      }
+      const normalizedEmail = email.trim().toLowerCase();
+      const normalizedPassword = password.trim();
 
-      const result = await actor.login(email.trim(), password.trim());
-
-      // result is string | null — handle both direct string and array form
-      const role: string | null = Array.isArray(result)
-        ? (result[0] ?? null)
-        : result;
-
-      if (!role) {
+      const match = CREDENTIALS[normalizedEmail];
+      if (!match || match.password !== normalizedPassword) {
         setError("Invalid email or password. Please check your credentials.");
         return;
       }
 
-      storeSession({ email: email.trim(), role: role as WorkshopRole });
+      storeSession({ email: normalizedEmail, role: match.role });
 
-      if (role === "manager") {
+      if (match.role === "manager") {
         void navigate({ to: "/manager" });
-      } else if (role === "ceo") {
-        void navigate({ to: "/ceo" });
       } else {
-        void navigate({ to: "/manager" });
+        void navigate({ to: "/ceo" });
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Login failed";
@@ -161,18 +155,13 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full h-11 bg-[oklch(0.65_0.2_30)] hover:bg-[oklch(0.58_0.2_30)] text-white font-medium mt-2"
-              disabled={loading || !actor}
+              disabled={loading}
               data-ocid="login.submit_button"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Signing in...
-                </>
-              ) : !actor ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Connecting...
                 </>
               ) : (
                 "Sign In"

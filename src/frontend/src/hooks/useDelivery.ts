@@ -81,6 +81,8 @@ export function useDelivery() {
       id,
       vehicle_no: item.vehicle_no,
       customer_name: item.customer_name,
+      custom_name: item.custom_name || "",
+      team_name: item.team_name || "",
       delivery_date: item.delivery_date,
       driver_name: item.driver_name,
       notes: item.notes,

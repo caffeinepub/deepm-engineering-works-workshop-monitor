@@ -46,6 +46,7 @@ export default function UnderpartForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [workStatus, setWorkStatus] = useState(
     initial?.work_status || "Not Finished",
   );
@@ -58,12 +59,14 @@ export default function UnderpartForm({
     if (initial) {
       setTeamName(initial.team_name || "");
       setCustomerName(initial.customer_name || "");
+      setCustomName(initial.custom_name || "");
       setWorkStatus(initial.work_status || "Not Finished");
       setNotes(initial.notes || "");
       setKeptPhotoUrls(initial.photos || []);
     } else {
       setTeamName("");
       setCustomerName("");
+      setCustomName("");
       setWorkStatus("Not Finished");
       setNotes("");
       setKeptPhotoUrls([]);
@@ -82,6 +85,7 @@ export default function UnderpartForm({
       await onSubmit({
         team_name: teamName,
         customer_name: customerName,
+        custom_name: customName,
         work_status: workStatus,
         notes,
         photos: keptPhotoUrls,
@@ -129,6 +133,16 @@ export default function UnderpartForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Selvam & Sons"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Custom Name</Label>
+            <Input
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

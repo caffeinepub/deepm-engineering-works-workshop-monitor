@@ -36,6 +36,8 @@ export default function DeliveryForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [teamName, setTeamName] = useState(initial?.team_name || "");
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [deliveryDate, setDeliveryDate] = useState(
     initial?.delivery_date || new Date().toISOString().split("T")[0],
   );
@@ -49,6 +51,8 @@ export default function DeliveryForm({
     if (initial) {
       setVehicleNo(initial.vehicle_no || "");
       setCustomerName(initial.customer_name || "");
+      setTeamName(initial.team_name || "");
+      setCustomName(initial.custom_name || "");
       setDeliveryDate(
         initial.delivery_date || new Date().toISOString().split("T")[0],
       );
@@ -58,6 +62,8 @@ export default function DeliveryForm({
     } else {
       setVehicleNo("");
       setCustomerName("");
+      setTeamName("");
+      setCustomName("");
       setDeliveryDate(new Date().toISOString().split("T")[0]);
       setDriverName("");
       setNotes("");
@@ -85,6 +91,8 @@ export default function DeliveryForm({
       await onSubmit({
         vehicle_no: vehicleNo.trim(),
         customer_name: customerName.trim(),
+        team_name: teamName.trim(),
+        custom_name: customName.trim(),
         delivery_date: deliveryDate,
         driver_name: driverName.trim(),
         notes,
@@ -136,6 +144,30 @@ export default function DeliveryForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Kumar Transports"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="delivery-team-name">Team Name</Label>
+            <Input
+              id="delivery-team-name"
+              type="text"
+              className="h-11 text-base"
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              placeholder="e.g. Team A"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="delivery-custom-name">Custom Name</Label>
+            <Input
+              id="delivery-custom-name"
+              type="text"
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

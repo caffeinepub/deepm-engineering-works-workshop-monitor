@@ -9,6 +9,8 @@ function mapCabinRaw(raw: {
   cabinType: string;
   stage: string;
   startDate: string;
+  customName: string;
+  customerName: string;
   expectedDate: string;
   notes: string;
   createdAt: bigint;
@@ -17,7 +19,8 @@ function mapCabinRaw(raw: {
 }): Omit<Cabin, "photos"> & { rawPhotos: unknown[] } {
   return {
     id: raw.id.toString(),
-    customer_name: raw.startDate, // repurposed field: backend startDate stores customer name
+    customer_name: raw.customerName || raw.startDate, // prefer customerName, fallback to startDate for legacy
+    custom_name: raw.customName || "",
     team_no: raw.teamNo,
     cabin_type: raw.cabinType,
     stage: raw.stage,
@@ -80,7 +83,9 @@ export function useCabins() {
       teamNo: item.team_no,
       cabinType: item.cabin_type,
       stage: item.stage,
-      startDate: item.customer_name, // store customer_name in backend's startDate field
+      startDate: item.customer_name, // legacy: keep startDate in sync with customerName
+      customerName: item.customer_name,
+      customName: item.custom_name || "",
       expectedDate: item.expected_date,
       notes: item.notes,
       photos: photoBytes,
@@ -104,7 +109,9 @@ export function useCabins() {
       teamNo: merged.team_no,
       cabinType: merged.cabin_type,
       stage: merged.stage,
-      startDate: merged.customer_name, // store customer_name in backend's startDate field
+      startDate: merged.customer_name, // legacy: keep startDate in sync with customerName
+      customerName: merged.customer_name,
+      customName: merged.custom_name || "",
       expectedDate: merged.expected_date,
       notes: merged.notes,
       photos: newBytes,

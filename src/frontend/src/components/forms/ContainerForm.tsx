@@ -53,6 +53,7 @@ export default function ContainerForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [containerType, setContainerType] = useState(
     initial?.container_type || "",
   );
@@ -69,6 +70,7 @@ export default function ContainerForm({
     if (initial) {
       setTeamLeader(initial.team_leader || "");
       setCustomerName(initial.customer_name || "");
+      setCustomName(initial.custom_name || "");
       setContainerType(initial.container_type || "");
       setStage(initial.stage || "Not Started");
       setExpectedDate(initial.expected_date || "");
@@ -77,6 +79,7 @@ export default function ContainerForm({
     } else {
       setTeamLeader("");
       setCustomerName("");
+      setCustomName("");
       setContainerType("");
       setStage("Not Started");
       setExpectedDate("");
@@ -101,6 +104,7 @@ export default function ContainerForm({
       await onSubmit({
         team_leader: teamLeader,
         customer_name: customerName,
+        custom_name: customName,
         container_type: containerType,
         stage,
         expected_date: expectedDate,
@@ -150,6 +154,16 @@ export default function ContainerForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Kumar Transports"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Custom Name</Label>
+            <Input
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

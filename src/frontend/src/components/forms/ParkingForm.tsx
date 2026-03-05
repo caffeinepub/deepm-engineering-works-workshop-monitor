@@ -35,6 +35,7 @@ export default function ParkingForm({
   const [customerName, setCustomerName] = useState(
     initial?.customer_name || "",
   );
+  const [customName, setCustomName] = useState(initial?.custom_name || "");
   const [waitingFor, setWaitingFor] = useState(initial?.waiting_for || "");
   const [entryDate, setEntryDate] = useState(initial?.entry_date || "");
   const [notes, setNotes] = useState(initial?.notes || "");
@@ -45,12 +46,14 @@ export default function ParkingForm({
   useEffect(() => {
     if (initial) {
       setCustomerName(initial.customer_name || "");
+      setCustomName(initial.custom_name || "");
       setWaitingFor(initial.waiting_for || "");
       setEntryDate(initial.entry_date || "");
       setNotes(initial.notes || "");
       setKeptPhotoUrls(initial.photos || []);
     } else {
       setCustomerName("");
+      setCustomName("");
       setWaitingFor("");
       setEntryDate(new Date().toISOString().split("T")[0]);
       setNotes("");
@@ -69,6 +72,7 @@ export default function ParkingForm({
     try {
       await onSubmit({
         customer_name: customerName,
+        custom_name: customName,
         waiting_for: waitingFor,
         entry_date: entryDate,
         notes,
@@ -101,6 +105,16 @@ export default function ParkingForm({
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Rajan Transports"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Custom Name</Label>
+            <Input
+              className="h-11 text-base"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="e.g. Special label or alias"
             />
           </div>
 

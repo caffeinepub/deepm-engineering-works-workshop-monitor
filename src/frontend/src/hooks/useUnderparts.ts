@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 function mapUnderpartRaw(raw: {
   id: bigint;
   customerName: string;
+  customName: string;
   teamName: string;
   workStatus: string;
   notes: string;
@@ -16,6 +17,7 @@ function mapUnderpartRaw(raw: {
   return {
     id: raw.id.toString(),
     customer_name: raw.customerName,
+    custom_name: raw.customName || "",
     team_name: raw.teamName,
     work_status: raw.workStatus,
     notes: raw.notes,
@@ -74,6 +76,7 @@ export function useUnderparts() {
     const photoBytes = await uploadPhotoFiles(item.photoFiles || []);
     const id = await actor.addUnderpart({
       customerName: item.customer_name,
+      customName: item.custom_name || "",
       teamName: item.team_name,
       workStatus: item.work_status,
       notes: item.notes,
@@ -99,6 +102,7 @@ export function useUnderparts() {
 
     await actor.updateUnderpart(BigInt(id), {
       customerName: merged.customer_name,
+      customName: merged.custom_name || "",
       teamName: merged.team_name,
       workStatus: merged.work_status,
       notes: merged.notes,
